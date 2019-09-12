@@ -1,13 +1,20 @@
 package com.example.minimoneybox
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.view.ActionMode
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.view.*
 import java.util.regex.Pattern
+import android.animation.Animator.AnimatorListener as AnimatorListener1
 
 /**
  * A login screen that offers login via email/password.
@@ -32,7 +39,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         setupAnimation()
+
     }
+
+
 
     private fun setupViews() {
         btn_sign_in = findViewById(R.id.btn_sign_in)
@@ -55,31 +65,71 @@ class LoginActivity : AppCompatActivity() {
 
     private fun allFieldsValid() : Boolean {
         var allValid = false
-
-        if (Pattern.matches(EMAIL_REGEX, et_email.text.toString())) {
-            allValid = true
-        } else {
-            til_email.error = getString(R.string.email_address_error)
+        if(et_email.text.toString()!="" && et_password.text.toString()!="" && et_name.text.toString()!="")
+        {
+            if (Pattern.matches(EMAIL_REGEX, et_email.text.toString()) && Pattern.matches(PASSWORD_REGEX, et_password.text.toString()) && Pattern.matches(NAME_REGEX, et_name.text.toString()))
+            {
+                    allValid=true;
+            }
+            else
+            {
+                if (!Pattern.matches(EMAIL_REGEX, et_email.text.toString()))
+                    til_email.error = getString(R.string.email_address_error)
+                if (!Pattern.matches(PASSWORD_REGEX, et_password.text.toString()))
+                    til_password.error = getString(R.string.password_error)
+                if (!Pattern.matches(NAME_REGEX, et_name.text.toString()))
+                    til_name.error = getString(R.string.full_name_error)
+            }
         }
+        else
+            if (et_email.text.toString() != "" && et_password.text.toString() != "") {
+                if (Pattern.matches(EMAIL_REGEX, et_email.text.toString()) && Pattern.matches(PASSWORD_REGEX, et_password.text.toString()))
+                {
+                    allValid = true;
+                } else {
+                    if (!Pattern.matches(EMAIL_REGEX, et_email.text.toString()))
+                        til_email.error = getString(R.string.email_address_error)
+                    if (!Pattern.matches(PASSWORD_REGEX, et_password.text.toString()))
+                        til_password.error = getString(R.string.password_error)
+                }
+            }
+            else
+            {
+                if (et_email.text.toString() == "")
+                    til_email.error = "Email is not optional!"
+                if(et_password.text.toString() == "")
+                    til_password.error="Password is not optional"
+                if (!Pattern.matches(NAME_REGEX, et_name.text.toString()))
+                    til_name.error = getString(R.string.full_name_error)
+            }
 
-        if (Pattern.matches(PASSWORD_REGEX, et_password.text.toString())) {
-            allValid = true
-        } else {
-            til_password.error = getString(R.string.password_error)
-        }
-
-        if (Pattern.matches(NAME_REGEX, et_password.text.toString())) {
-            allValid = true
-        } else {
-            til_email.error = getString(R.string.full_name_error)
-        }
 
         return allValid
     }
 
     private fun setupAnimation() {
         pigAnimation.playAnimation()
+
+        pigAnimation.addAnimatorListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator?) {
+                pigAnimation.loop(true)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+                pigAnimation.setMinAndMaxFrame(131,158)
+            }
+
+
+            override fun onAnimationEnd(animation: Animator?) {
+            }
+
+        })
+
     }
+
+
 
     companion object {
         val EMAIL_REGEX = "[^@]+@[^.]+\\..+"
