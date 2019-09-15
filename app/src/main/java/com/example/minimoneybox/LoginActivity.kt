@@ -13,14 +13,31 @@ import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.view.*
+import okhttp3.*
+import java.io.BufferedReader
 import java.util.regex.Pattern
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 import android.animation.Animator.AnimatorListener as AnimatorListener1
+import android.R.string
+import android.os.AsyncTask.execute
+import okhttp3.RequestBody
+import okhttp3.OkHttpClient
+
+
+
+
 
 /**
  * A login screen that offers login via email/password.
  */
 class LoginActivity : AppCompatActivity() {
 
+    val caller = PostData()
     lateinit var btn_sign_in : Button
     lateinit var til_email : TextInputLayout
     lateinit var et_email : EditText
@@ -29,6 +46,8 @@ class LoginActivity : AppCompatActivity() {
     lateinit var til_name : TextInputLayout
     lateinit var et_name : EditText
     lateinit var pigAnimation : LottieAnimationView
+    //val getCall = GetData()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +60,16 @@ class LoginActivity : AppCompatActivity() {
         setupAnimation()
 
     }
+    /*fun run(url: String) {
+        val request = Request.Builder()
+            .url(url)
+            .build()
 
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {}
+            override fun onResponse(call: Call, response: Response) = println(response.body()?.string())
+        })
+    }*/
 
 
     private fun setupViews() {
@@ -57,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
         btn_sign_in.setOnClickListener {
             if (allFieldsValid()) {
                 Toast.makeText(this, R.string.input_valid, Toast.LENGTH_LONG).show()
+                System.out.println(caller.sendPostRequest(et_email.toString(),et_password.toString()))
             }
         }
 
@@ -139,3 +168,5 @@ class LoginActivity : AppCompatActivity() {
         val secondAnim = 131 to 158
     }
 }
+
+
